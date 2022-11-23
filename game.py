@@ -3,6 +3,7 @@ import sys
 from map import *
 from settings import *
 from player import *
+from bullets import *
 
 class Game:
 	def __init__(self):
