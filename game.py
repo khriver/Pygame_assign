@@ -1,29 +1,45 @@
-import pygame, sys
+import pygame as pg
+import sys
+from map import *
 from settings import *
-from level import Level
+from player import *
 
 class Game:
 	def __init__(self):
-		  
-		# general setup
-		pygame.init()
-		self.screen = pygame.display.set_mode((WIDTH,HEIGTH))
-		pygame.display.set_caption('Zelda')
-		self.clock = pygame.time.Clock()
+		pg.init()
+		self.screen = pg.display.set_mode(WindowSize)
+		self.clock = pg.time.Clock()
+		self.delta_time = 1
+		self.new_game()
+	
+	def new_game(self):
+		self.map = Map(self)
+		self.player = Player(self)
 
-		self.level = Level()
+	def update(self):
+		self.player.update()
+		pg.display.flip()
+		self.delta_time = self.clock.tick(FPS)
+
+	def draw(self):
+		self.screen.fill('black')
+		self.map.draw()
+		self.player.draw()
+	
+	def check_events(self):
+		for event in pg.event.get():
+			if event.type == pg.QUIT or event.type == pg.K_ESCAPE:
+				pg.quit()
+				sys.exit()
 	
 	def run(self):
 		while True:
-			for event in pygame.event.get():
-				if event.type == pygame.QUIT:
-					pygame.quit()
-					sys.exit()
+			self.check_events()
+			self.update()
+			self.draw()
 
-			self.screen.fill('black')
-			self.level.run()
-			pygame.display.update()
-			self.clock.tick(FPS)
+	
+
 
 if __name__ == '__main__':
 	game = Game()
