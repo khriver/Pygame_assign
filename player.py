@@ -8,7 +8,7 @@ class Player:
         self.game = game
         self.x, self.y = PLAYER_POS
         self.angle = PLAYER_ANGLE
-        self.gage = 0.01
+        self.gage = 0.1
         self.gage_state = 'UP'
         self.bullets = Bullets(self.game, self.angle, self.gage)
 
@@ -18,7 +18,7 @@ class Player:
         delta_gage , delta_angle = 0,0
         if self.gage > 1:
             self.gage_state = 'DOWN'
-        elif self.gage < 0:
+        elif self.gage < 0.1:
             self.gage_state = 'UP'
 
         keys = pg.key.get_pressed()
@@ -41,6 +41,8 @@ class Player:
             self.angle = math.radians(290)
         if math.degrees(self.angle) > 340:
             self.angle = math.radians(340)
+        
+        self.bullets.update_pos(self.angle, self.gage)
         
         self.bullets.movement()
         
