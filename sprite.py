@@ -3,11 +3,11 @@ from bullets import *
 import pygame as pg
 import math
 
-class Player:
+class Sprite:
     def __init__(self, game):
         self.game = game
         self.turns = True
-        self.x, self.y = PLAYER_POS
+        self.x, self.y = 10, 10
         self.angle = PLAYER_ANGLE
         self.gage = 0.1
         self.gage_state = 'UP'
