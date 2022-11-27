@@ -3,6 +3,7 @@ import sys
 from map import *
 from settings import *
 from player import *
+from sprite import *
 from bullets import *
 
 class Game:
@@ -16,9 +17,11 @@ class Game:
 	def new_game(self):
 		self.map = Map(self)
 		self.player = Player(self)
+		self.sprite = Sprite(self)
 
 	def update(self):
 		self.player.update()
+		self.sprite.update()
 		pg.display.flip()
 		self.delta_time = self.clock.tick(FPS)
 
@@ -26,8 +29,18 @@ class Game:
 		self.screen.fill('black')
 		self.map.draw()
 		self.player.draw()
+		self.sprite.draw()
 	
 	def check_events(self):
+		if self.player.turns == True and self.player.bullets.state == 'Stop':
+			self.sprite.turns = True
+			self.sprite.bullets.state = 'Ready'
+			self.player.turns = False
+		if self.sprite.turns == True and self.sprite.bullets.state == 'Stop':
+			self.player.turns = True
+			self.player.bullets.state ='Ready'
+			self.sprite.turns = False
+
 		for event in pg.event.get():
 			if event.type == pg.QUIT or event.type == pg.K_ESCAPE:
 				pg.quit()
@@ -35,6 +48,7 @@ class Game:
 	
 	def run(self):
 		while True:
+			print(self.player.turns , self.player.bullets.state, self.sprite.turns,self.sprite.bullets.state)
 			self.check_events()
 			self.update()
 			self.draw()

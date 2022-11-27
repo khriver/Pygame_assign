@@ -6,7 +6,7 @@ import math
 class Sprite:
     def __init__(self, game):
         self.game = game
-        self.turns = True
+        self.turns = False
         self.x, self.y = 10, 10
         self.angle = PLAYER_ANGLE
         self.gage = 0.1
@@ -46,16 +46,18 @@ class Sprite:
         self.bullets.update_pos(self.angle, self.gage)
         
         self.bullets.movement()
+
         
         
     def draw(self):
-        
-        if self.turns:
-            pg.draw.line(self.game.screen, 'yellow',(self.x * 50, self.y *50), (self.x*50 + WIDTH * math.cos(self.angle), self.y*50 + HEIGHT * math.sin(self.angle)), 2)
-            pg.draw.line(self.game.screen, 'yellow',(self.x * 50 + 10, self.y * 50 + 10),(self.x * 50 + 10, self.y * 50 + 10 + self.gage*100 + 10), 2)
-            pg.draw.circle(self.game.screen, 'green', (self.x * 50, self.y *50),10)
-            self.bullets.draw()
-
+        pg.draw.circle(self.game.screen, 'red', (self.x * 50, self.y *50),10)
+        if self.turns == True:
+            if self.bullets.state == 'Ready':
+                pg.draw.line(self.game.screen, 'yellow',(self.x * 50, self.y *50), (self.x*50 + WIDTH * math.cos(self.angle), self.y*50 + HEIGHT * math.sin(self.angle)), 2)
+                pg.draw.line(self.game.screen, 'blue',(self.x * 50 + 10, self.y * 50 + 10),(self.x * 50 + 10, self.y * 50 + 10 + self.gage*100 + 10), 2)
+            if self.bullets.state=='Fire':
+                self.bullets.draw()  
+                
     def update(self):
         if self.turns :
             self.movement()

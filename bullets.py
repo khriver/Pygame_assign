@@ -12,7 +12,7 @@ class Bullets:
         self.x ,self.y = PLAYER_POS
         self.angle = angle
         self.gage = gage
-        self.state = 'Stop'
+        self.state = 'Ready'
         self.type = '1'
 
     
@@ -59,7 +59,7 @@ class Bullets:
         if self.x * 50 > WIDTH or self.x * 50 < 0 or self.y * 50 > HEIGHT:
             self.state = 'Stop'
 
-        if self.state == 'Stop':
+        if self.state == 'Stop' or self.state == 'Ready':
             self.x, self.y = PLAYER_POS
             
 
