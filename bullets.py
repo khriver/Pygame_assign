@@ -6,15 +6,27 @@ import pygame as pg
 class Bullets:
     def __init__(self,game,angle,gage):
         self.game = game
+        self.type1_img = pg.image.load('./resources/img/Type1.png')#.convert_alpha
+        self.type1_img = pg.transform.scale(self.type1_img,(50,50))
+        self.type1_img = pg.transform.rotate(self.type1_img,315)
+
+        self.type2_img = pg.image.load('./resources/img/Type2.png')#.convert_alpha
+
+        #self.type1_mask = pg.mask.from_surface(self.type1_img)
+        self.type1_mask = self.type1_img.get_rect()
+        self.type1_mask.centerx , self.type2
+        self.type2_mask = pg.mask.from_surface(self.type2_img)
+        
         self.radius_expl = B1_RADIUS_EXPLOSION
         self.mass = B1_MASS
         self.bullet_speeed = B1_SPEED
-        self.x ,self.y = PLAYER_POS
+        self.type = '1'
+
+
         self.angle = angle
         self.gage = gage
         self.state = 'Ready'
-        self.type = '1'
-
+        self.x ,self.y = PLAYER_POS
     
     def weapon_change(self):
 
@@ -61,11 +73,12 @@ class Bullets:
 
         if self.state == 'Stop' or self.state == 'Ready':
             self.x, self.y = PLAYER_POS
-            
+
 
     def draw(self):
         if self.state =='Fire':
-            pg.draw.circle(self.game.screen, 'white', (self.x*50, self.y*50),10)
+            self.game.screen.blit(self.type1_img,(self.x*50,self.y*50))
+            pg.draw.circle(self.game.screen, 'black', (self.x*50, self.y*50),10)
         
 
 
@@ -73,5 +86,4 @@ class Bullets:
         self.weapon_change()
         self.movement()
         
-
 

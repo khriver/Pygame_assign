@@ -3,19 +3,25 @@ from bullets import *
 import pygame as pg
 import math
 
-class Sprite:
+
+
+class Sprite(pg.sprite.Sprite):
     def __init__(self, game):
+        super().__init__()
         self.game = game
+        self.sprite_img = pg.image.load('./resources/img/Sprite_normal.png')#.convert_alpha
+        #self.sprite_mask = pg.mask.from_surface(self.sprite_img)
+        self.sprite_mask = self.sprite_img.get_rect()
         self.turns = False
-        self.x, self.y = 10, 10
-        self.angle = PLAYER_ANGLE
+        self.x, self.y = 10, 5
+        self.angle = SPRITE_ANGLE
         self.gage = 0.1
         self.gage_state = 'UP'
         self.bullets = Bullets(self.game, self.angle, self.gage)
 
     def movement(self):
-        speed = PLAYER_SPEED * self.game.delta_time
-        rot_speed = PLAYER_ROT_SPEED * self.game.delta_time
+        speed = SPRITE_SPEED * self.game.delta_time
+        rot_speed = SPRITE_ROT_SPEED * self.game.delta_time
         delta_gage , delta_angle = 0,0
         if self.gage > 1:
             self.gage_state = 'DOWN'
@@ -49,8 +55,9 @@ class Sprite:
 
         
         
-    def draw(self):
+    def draw(self, crash = True):
         pg.draw.circle(self.game.screen, 'red', (self.x * 50, self.y *50),10)
+        self.game.screen.blit(self.sprite_img,(self.x * 50, self.y * 50))
         if self.turns == True:
             if self.bullets.state == 'Ready':
                 pg.draw.line(self.game.screen, 'yellow',(self.x * 50, self.y *50), (self.x*50 + WIDTH * math.cos(self.angle), self.y*50 + HEIGHT * math.sin(self.angle)), 2)
@@ -61,4 +68,6 @@ class Sprite:
     def update(self):
         if self.turns :
             self.movement()
+        if pg.sprite.collide_mask(self.game.player.bullets,self):
+            print('hit')
 
