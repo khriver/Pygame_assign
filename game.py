@@ -26,10 +26,10 @@ class Game:
 		self.delta_time = self.clock.tick(FPS)
 
 	def draw(self):
-		self.screen.fill('black')
+		self.screen.fill('white')
 		self.map.draw()
 		self.player.draw()
-		self.sprite.draw()
+		self.sprite.draw(self.screen)
 	
 	def check_events(self):
 		if self.player.turns == True and self.player.bullets.state == 'Stop':
@@ -48,7 +48,6 @@ class Game:
 	
 	def run(self):
 		while True:
-			print(self.player.turns , self.player.bullets.state, self.sprite.turns,self.sprite.bullets.state)
 			self.check_events()
 			self.update()
 			self.draw()

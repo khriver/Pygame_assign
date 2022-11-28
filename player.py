@@ -3,8 +3,9 @@ from bullets import *
 import pygame as pg
 import math
 
-class Player:
+class Player(pg.sprite.Sprite):
     def __init__(self, game):
+        super().__init__()
         self.game = game
         self.turns = True
         self.x, self.y = PLAYER_POS
