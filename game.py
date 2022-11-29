@@ -18,10 +18,16 @@ class Game:
 		self.map = Map(self)
 		self.player = Player(self)
 		self.sprite = Sprite(self)
+		self.bullets_player = Bullets(self,self.player.angle,self.player.gage)
+		self.bullets_sprite = Bullets(self,self.sprite.angle,self.sprite.gage)
 
 	def update(self):
 		self.player.update()
 		self.sprite.update()
+		self.bullets_player.update_pos(self.player.angle,self.player.gage,self.player.turns)
+		self.bullets_player.update()
+		self.bullets_sprite.update_pos(self.sprite.angle,self.sprite.gage,self.sprite.turns)
+		self.bullets_sprite.update()
 		pg.display.flip()
 		self.delta_time = self.clock.tick(FPS)
 
@@ -29,16 +35,20 @@ class Game:
 		self.screen.fill('white')
 		self.map.draw()
 		self.player.draw()
-		self.sprite.draw(self.screen)
+		self.sprite.draw()
+		if self.bullets_player.state=='Fire' and self.player.turns == True:
+			self.bullets_player.draw()  	
+		if self.bullets_sprite.state=='Fire' and self.sprite.turns == True:
+			self.bullets_sprite.draw() 
 	
 	def check_events(self):
-		if self.player.turns == True and self.player.bullets.state == 'Stop':
+		if self.player.turns == True and self.bullets_player.state == 'Stop':
 			self.sprite.turns = True
-			self.sprite.bullets.state = 'Ready'
+			self.bullets_sprite.state = 'Ready'
 			self.player.turns = False
-		if self.sprite.turns == True and self.sprite.bullets.state == 'Stop':
+		if self.sprite.turns == True and self.bullets_sprite.state == 'Stop':
 			self.player.turns = True
-			self.player.bullets.state ='Ready'
+			self.bullets_player.state ='Ready'
 			self.sprite.turns = False
 
 		for event in pg.event.get():
@@ -48,6 +58,7 @@ class Game:
 	
 	def run(self):
 		while True:
+			print(self.bullets_player.rect,self.sprite.rect)
 			self.check_events()
 			self.update()
 			self.draw()

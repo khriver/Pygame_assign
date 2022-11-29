@@ -12,6 +12,7 @@ class Player(pg.sprite.Sprite):
         self.angle = PLAYER_ANGLE
         self.gage = 0.1
         self.gage_state = 'UP'
+        self.bullets = Bullets(self.game, self.angle, self.gage)
 
     def movement(self):
         speed = PLAYER_SPEED * self.game.delta_time
@@ -43,18 +44,22 @@ class Player(pg.sprite.Sprite):
         if math.degrees(self.angle) > 340:
             self.angle = math.radians(340)
         
+        self.bullets.update_pos(self.angle, self.gage)
+        
+        self.bullets.movement()
     
         
 
         
         
     def draw(self):
-        pg.draw.circle(self.game.screen, 'green', (self.x  , self.y  ),10)
+        pg.draw.circle(self.game.screen, 'green', (self.x * 50, self.y *50),10)
         if self.turns == True:
-            if self.game.bullets_player.state == 'Ready':
-                pg.draw.line(self.game.screen, 'yellow',(self.x  , self.y  ), (self.x  + WIDTH * math.cos(self.angle), self.y  + HEIGHT * math.sin(self.angle)), 2)
-                pg.draw.line(self.game.screen, 'blue',(self.x   + 10, self.y   + 10),(self.x   + 10, self.y   + 10 + self.gage*100 + 10), 2)
-
+            if self.bullets.state == 'Ready':
+                pg.draw.line(self.game.screen, 'yellow',(self.x * 50, self.y *50), (self.x*50 + WIDTH * math.cos(self.angle), self.y*50 + HEIGHT * math.sin(self.angle)), 2)
+                pg.draw.line(self.game.screen, 'blue',(self.x * 50 + 10, self.y * 50 + 10),(self.x * 50 + 10, self.y * 50 + 10 + self.gage*100 + 10), 2)
+            if self.bullets.state=='Fire':
+                self.bullets.draw()  
                 
 
     def update(self):

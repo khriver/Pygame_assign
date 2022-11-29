@@ -9,20 +9,24 @@ class Sprite(pg.sprite.Sprite):
     def __init__(self, game):
         super().__init__()
         self.game = game
-        self.sprite_img = pg.image.load('./resources/img/Sprite_normal.png')#.convert_alpha
-        #self.sprite_mask = pg.mask.from_surface(self.sprite_img)
-        self.sprite_mask = self.sprite_img.get_rect()
+        self.x, self.y = SPRITE_POS
+        self.image = pg.image.load('./resources/img/sprite_normal.png')#.convert_alpha
+        self.image = pg.transform.scale(self.image,(180,320))
+        #self.sprite_mask = pg.mask.from_surface(self.image)
+        self.rect = self.image.get_rect()
+        self.rect.centerx , self.rect.centery = self.x, self.y
         self.turns = False
-        self.x, self.y = 10, 5
+        
         self.angle = SPRITE_ANGLE
         self.gage = 0.1
         self.gage_state = 'UP'
-        self.bullets = Bullets(self.game, self.angle, self.gage)
+
 
     def movement(self):
         speed = SPRITE_SPEED * self.game.delta_time
         rot_speed = SPRITE_ROT_SPEED * self.game.delta_time
         delta_gage , delta_angle = 0,0
+        
         if self.gage > 1:
             self.gage_state = 'DOWN'
         elif self.gage < 0.1:
@@ -48,26 +52,22 @@ class Sprite(pg.sprite.Sprite):
             self.angle = math.radians(290)
         if math.degrees(self.angle) > 340:
             self.angle = math.radians(340)
-        
-        self.bullets.update_pos(self.angle, self.gage)
-        
-        self.bullets.movement()
+
 
         
         
     def draw(self, crash = True):
-        pg.draw.circle(self.game.screen, 'red', (self.x * 50, self.y *50),10)
-        self.game.screen.blit(self.sprite_img,(self.x * 50, self.y * 50))
+        pg.draw.circle(self.game.screen, 'red', (self.x, self.y),10)
+        self.game.screen.blit(self.image,(self.x-90 ,self.y-160))
         if self.turns == True:
-            if self.bullets.state == 'Ready':
-                pg.draw.line(self.game.screen, 'yellow',(self.x * 50, self.y *50), (self.x*50 + WIDTH * math.cos(self.angle), self.y*50 + HEIGHT * math.sin(self.angle)), 2)
-                pg.draw.line(self.game.screen, 'blue',(self.x * 50 + 10, self.y * 50 + 10),(self.x * 50 + 10, self.y * 50 + 10 + self.gage*100 + 10), 2)
-            if self.bullets.state=='Fire':
-                self.bullets.draw()  
+            if self.game.bullets_sprite.state == 'Ready':
+                pg.draw.line(self.game.screen, 'yellow',(self.x  , self.y), (self.x + WIDTH * math.cos(self.angle), self.y + HEIGHT * math.sin(self.angle)), 2)
+                pg.draw.line(self.game.screen, 'blue',(self.x   + 10, self.y   + 10),(self.x   + 10, self.y   + 10 + self.gage*100 + 10), 2)
+ 
                 
     def update(self):
+
         if self.turns :
             self.movement()
-        if pg.sprite.collide_mask(self.game.player.bullets,self):
-            print('hit')
+        
 

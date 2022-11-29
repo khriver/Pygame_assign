@@ -3,19 +3,26 @@ from player import *
 import math
 import pygame as pg
 
-class Bullets:
+class Bullets(pg.sprite.Sprite):
     def __init__(self,game,angle,gage):
+        super().__init__()
         self.game = game
-        self.type1_img = pg.image.load('./resources/img/Type1.png')#.convert_alpha
-        self.type1_img = pg.transform.scale(self.type1_img,(50,50))
-        self.type1_img = pg.transform.rotate(self.type1_img,315)
+        self.angle = angle
+        self.gage = gage
+        self.state = 'Ready'
+        self.x ,self.y = PLAYER_POS
 
-        self.type2_img = pg.image.load('./resources/img/Type2.png')#.convert_alpha
+
+        self.type1_img = pg.image.load('./resources/img/Type1.png')#.convert_alpha()
+        self.type1_img = pg.transform.scale(self.type1_img,(50,50))
+        self.type1_img = pg.transform.rotate(self.type1_img,135)
+
+        #self.type2_img = pg.image.load('./resources/img/Type2.png')#.convert_alpha
 
         #self.type1_mask = pg.mask.from_surface(self.type1_img)
-        self.type1_mask = self.type1_img.get_rect()
-        self.type1_mask.centerx , self.type2
-        self.type2_mask = pg.mask.from_surface(self.type2_img)
+        self.rect = self.type1_img.get_rect()
+        self.rect.centerx , self.rect.centery = self.x, self.y
+        #self.type2_mask = pg.mask.from_surface(self.type2_img)
         
         self.radius_expl = B1_RADIUS_EXPLOSION
         self.mass = B1_MASS
@@ -23,10 +30,7 @@ class Bullets:
         self.type = '1'
 
 
-        self.angle = angle
-        self.gage = gage
-        self.state = 'Ready'
-        self.x ,self.y = PLAYER_POS
+
     
     def weapon_change(self):
 
@@ -43,15 +47,17 @@ class Bullets:
             self.type = '2'
         
     
-    def update_pos(self, angle, gage):
+    def update_pos(self, angle, gage,turn):
         self.angle = angle
         self.gage = gage
+        self.turn = turn
 
     
     def movement(self):
         speed = self.bullet_speeed * self.game.delta_time * self.gage
         dx = 0
         dy = 0
+        self.rect = self.type1_img.get_rect()
 
 
         if pg.key.get_pressed()[pg.K_l]:
@@ -62,13 +68,13 @@ class Bullets:
 
         if self.state == 'Fire':
             delta_time = self.fire_time - pg.time.get_ticks()
-            gravity =  self.mass * delta_time * 0.00003
+            gravity =  self.mass * delta_time
             dx = math.cos(self.angle) * speed
             dy = math.sin(self.angle) * speed - gravity            
             self.x += dx
             self.y += dy
         
-        if self.x * 50 > WIDTH or self.x * 50 < 0 or self.y * 50 > HEIGHT:
+        if self.x > WIDTH or self.x < 0 or self.y > HEIGHT:
             self.state = 'Stop'
 
         if self.state == 'Stop' or self.state == 'Ready':
@@ -77,12 +83,13 @@ class Bullets:
 
     def draw(self):
         if self.state =='Fire':
-            self.game.screen.blit(self.type1_img,(self.x*50,self.y*50))
-            pg.draw.circle(self.game.screen, 'black', (self.x*50, self.y*50),10)
+            self.game.screen.blit(self.type1_img,(self.x ,self.y ))
+            pg.draw.circle(self.game.screen, 'black', (self.x , self.y ),10)
         
 
 
     def update(self):
+        self.rect = self.type1_img.get_rect()
         self.weapon_change()
         self.movement()
         
