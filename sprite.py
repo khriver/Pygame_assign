@@ -34,9 +34,9 @@ class Sprite(pg.sprite.Sprite):
 
         keys = pg.key.get_pressed()
         if keys[pg.K_UP]:
-            delta_angle -= rot_speed
-        if keys[pg.K_DOWN]:
             delta_angle += rot_speed
+        if keys[pg.K_DOWN]:
+            delta_angle -= rot_speed
         
         if keys[pg.K_SPACE]:
             if self.gage_state == 'UP':
@@ -48,10 +48,10 @@ class Sprite(pg.sprite.Sprite):
         self.gage += delta_gage
         self.angle += delta_angle
 
-        if math.degrees(self.angle) < 290:
-            self.angle = math.radians(290)
-        if math.degrees(self.angle) > 340:
-            self.angle = math.radians(340)
+        if math.degrees(self.angle) < 200:
+            self.angle = math.radians(200)
+        if math.degrees(self.angle) > 250:
+            self.angle = math.radians(250)
 
 
         

@@ -18,15 +18,15 @@ class Game:
 		self.map = Map(self)
 		self.player = Player(self)
 		self.sprite = Sprite(self)
-		self.bullets_player = Bullets(self,self.player.angle,self.player.gage)
-		self.bullets_sprite = Bullets(self,self.sprite.angle,self.sprite.gage)
+		self.bullets_player = Bullets(self,PLAYER_POS)
+		self.bullets_sprite = Bullets(self,SPRITE_POS)
 
 	def update(self):
 		self.player.update()
 		self.sprite.update()
-		self.bullets_player.update_pos(self.player.angle,self.player.gage,self.player.turns)
+		self.bullets_player.update_pos(self.player.angle,self.player.gage)
 		self.bullets_player.update()
-		self.bullets_sprite.update_pos(self.sprite.angle,self.sprite.gage,self.sprite.turns)
+		self.bullets_sprite.update_pos(self.sprite.angle,self.sprite.gage)
 		self.bullets_sprite.update()
 		pg.display.flip()
 		self.delta_time = self.clock.tick(FPS)
@@ -43,13 +43,15 @@ class Game:
 	
 	def check_events(self):
 		if self.player.turns == True and self.bullets_player.state == 'Stop':
+			self.player.turns = False
 			self.sprite.turns = True
 			self.bullets_sprite.state = 'Ready'
-			self.player.turns = False
+			
 		if self.sprite.turns == True and self.bullets_sprite.state == 'Stop':
+			self.sprite.turns = False
 			self.player.turns = True
 			self.bullets_player.state ='Ready'
-			self.sprite.turns = False
+			
 
 		for event in pg.event.get():
 			if event.type == pg.QUIT or event.type == pg.K_ESCAPE:
@@ -58,10 +60,14 @@ class Game:
 	
 	def run(self):
 		while True:
-			print(self.bullets_player.rect,self.sprite.rect)
+			if self.sprite.rect.colliderect(self.bullets_player.rect):
+				self.bullets_player.state = 'Stop'
+				self.bullets_player.rect
 			self.check_events()
 			self.update()
+			#print(self.bullets_player.get_rect(),self.bullets_sprite.get_rect())
 			self.draw()
+			#print(self.player.turns,self.bullets_player.state,self.sprite.turns,self.bullets_sprite.state)
 
 	
 
