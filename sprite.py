@@ -10,12 +10,17 @@ class Sprite(pg.sprite.Sprite):
         super().__init__()
         self.game = game
         self.x, self.y = SPRITE_POS
-        self.image = pg.image.load('./resources/img/sprite_normal.png')#.convert_alpha
-        self.image = pg.transform.scale(self.image,(180,320))
-        #self.sprite_mask = pg.mask.from_surface(self.image)
-        self.rect = self.image.get_rect()
+        self.img_ready = pg.image.load('./resources/img/sprite_ready.png')
+        self.img_ready = pg.transform.scale(self.img_ready,(135,240))
+        
+        self.img_hit = pg.image.load('./resources/img/sprite_hit.png')
+        self.img_hit = pg.transform.scale(self.img_hit,(135,240))
+
+
+        self.rect = self.img_ready.get_rect()
         self.rect.centerx , self.rect.centery = self.x, self.y
         self.turns = False
+        self.hitted = False
         
         self.angle = SPRITE_ANGLE
         self.gage = 0.1
@@ -58,7 +63,12 @@ class Sprite(pg.sprite.Sprite):
         
     def draw(self, crash = True):
         pg.draw.circle(self.game.screen, 'red', (self.x, self.y),10)
-        self.game.screen.blit(self.image,(self.x-90 ,self.y-160))
+        
+        if self.hitted:
+            self.game.screen.blit(self.img_hit,(self.x-90,self.y-160))
+        else:
+            self.game.screen.blit(self.img_ready,(self.x-90 ,self.y-160))
+
         if self.turns == True:
             if self.game.bullets_sprite.state == 'Ready':
                 pg.draw.line(self.game.screen, 'yellow',(self.x  , self.y), (self.x + WIDTH * math.cos(self.angle), self.y + HEIGHT * math.sin(self.angle)), 2)

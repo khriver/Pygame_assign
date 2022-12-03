@@ -9,6 +9,15 @@ class Player(pg.sprite.Sprite):
         self.game = game
         self.turns = True
         self.x, self.y = PLAYER_POS
+        self.img_ready = pg.image.load('./resources/img/player_ready.png')
+        self.img_hit = pg.image.load('./resources/img/player_hit.png')
+
+        self.image = pg.image.load('./resources/img/player_ready.png')#.convert_alpha
+        self.image = pg.transform.scale(self.image,(180,320))
+
+        self.rect = self.image.get_rect()
+        self.rect.centerx , self.rect.centery = self.x, self.y
+
         self.angle = PLAYER_ANGLE
         self.gage = 0.1
         self.gage_state = 'UP'
@@ -50,6 +59,7 @@ class Player(pg.sprite.Sprite):
         
     def draw(self):
         pg.draw.circle(self.game.screen, 'green', (self.x  , self.y  ),10)
+        self.game.screen.blit(self.image,(self.x-90 ,self.y-160))
         if self.turns == True:
             if self.game.bullets_player.state == 'Ready':
                 pg.draw.line(self.game.screen, 'yellow',(self.x  , self.y  ), (self.x  + WIDTH * math.cos(self.angle), self.y  + HEIGHT * math.sin(self.angle)), 2)
