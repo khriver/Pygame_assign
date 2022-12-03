@@ -8,19 +8,25 @@ import math
 class Sprite(pg.sprite.Sprite):
     def __init__(self, game):
         super().__init__()
+        self.hp = SPRITE_HP
         self.game = game
         self.x, self.y = SPRITE_POS
         self.img_ready = pg.image.load('./resources/img/sprite_ready.png')
-        self.img_ready = pg.transform.scale(self.img_ready,(135,240))
+        self.img_ready = pg.transform.scale(self.img_ready,(120,213))
         
         self.img_hit = pg.image.load('./resources/img/sprite_hit.png')
-        self.img_hit = pg.transform.scale(self.img_hit,(135,240))
+        self.img_hit = pg.transform.scale(self.img_hit,(120,213))
+
+        self.bomb_img = pg.image.load('./resources/img/rocket.png')
+        self.bomb_img = pg.transform.scale(self.bomb_img,(100,100))
+        
 
 
         self.rect = self.img_ready.get_rect()
-        self.rect.centerx , self.rect.centery = self.x, self.y
+        self.rect.centerx , self.rect.centery = self.x, self.y+20
         self.turns = False
         self.hitted = False
+        self.time_delay = False
         
         self.angle = SPRITE_ANGLE
         self.gage = 0.1
@@ -59,23 +65,39 @@ class Sprite(pg.sprite.Sprite):
             self.angle = math.radians(250)
 
 
+    def hit_delay(self):
+        if self.time_delay:
+            pg.time.delay(1000)
+            self.game.bullets_player.state = 'Stop'
+            self.hitted = False
+            self.time_delay = False
+        else :
+            pass
+
+
         
         
-    def draw(self, crash = True):
-        pg.draw.circle(self.game.screen, 'red', (self.x, self.y),10)
+    def draw(self):
         
+        self.hit_delay()    
         if self.hitted:
-            self.game.screen.blit(self.img_hit,(self.x-90,self.y-160))
+            self.game.screen.blit(self.img_hit,(self.x-60,self.y-107))
+            self.game.screen.blit(self.bomb_img,(self.game.bullets_player.x-100,self.game.bullets_player.y-100))
+            self.hp -= 0.1
+            self.time_delay = True
+            
+            
         else:
-            self.game.screen.blit(self.img_ready,(self.x-90 ,self.y-160))
+            self.game.screen.blit(self.img_ready,(self.x-60 ,self.y-107))
 
         if self.turns == True:
             if self.game.bullets_sprite.state == 'Ready':
-                pg.draw.line(self.game.screen, 'yellow',(self.x  , self.y), (self.x + WIDTH * math.cos(self.angle), self.y + HEIGHT * math.sin(self.angle)), 2)
-                pg.draw.line(self.game.screen, 'blue',(self.x   + 10, self.y   + 10),(self.x   + 10, self.y   + 10 + self.gage*100 + 10), 2)
+                pg.draw.line(self.game.screen, 'yellow',(self.x  , self.y), (self.x + 250 * math.cos(self.angle), self.y + 250 * math.sin(self.angle)), 4)
+                pg.draw.line(self.game.screen, 'blue',(self.x   - 30, self.y   +70),(self.x   - 30, self.y   +70 - self.gage*70 - 7), 7)
  
                 
     def update(self):
+
 
         if self.turns :
             self.movement()

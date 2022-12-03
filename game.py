@@ -6,6 +6,9 @@ from player import *
 from sprite import *
 from bullets import *
 from check_events import *
+from ui import *
+from wall import *
+from weather import *
 
 class Game:
 	def __init__(self):
@@ -19,9 +22,12 @@ class Game:
 		self.map = Map(self)
 		self.player = Player(self)
 		self.sprite = Sprite(self)
-		self.bullets_player = Bullets(self,PLAYER_POS)
-		self.bullets_sprite = Bullets(self,SPRITE_POS)
+		self.bullets_player = Bullets(self,PLAYER_POS,135)
+		self.bullets_sprite = Bullets(self,SPRITE_POS,315)
 		self.check_event = Checkevents(self)
+		self.ui = UI(self)
+		self.wall = Wall(self)
+		self.weather = Weather(self)
 
 	def update(self):
 		self.player.update()
@@ -30,6 +36,7 @@ class Game:
 		self.bullets_player.update()
 		self.bullets_sprite.update_pos(self.sprite.angle,self.sprite.gage)
 		self.bullets_sprite.update()
+		self.ui.update(self.player.hp,self.sprite.hp)
 		pg.display.flip()
 		self.delta_time = self.clock.tick(FPS)
 
@@ -41,12 +48,15 @@ class Game:
 		if self.bullets_player.state=='Fire' and self.player.turns == True:
 			self.bullets_player.draw()  	
 		if self.bullets_sprite.state=='Fire' and self.sprite.turns == True:
-			self.bullets_sprite.draw() 
+			self.bullets_sprite.draw()
+		self.ui.draw() 
+		self.wall.draw()
+		self.weather.draw()
 	
 	def check_events(self):
 		self.check_event.turn()
 		self.check_event.hit()
-			
+
 
 		for event in pg.event.get():
 			if event.type == pg.QUIT or event.type == pg.K_ESCAPE:
@@ -55,11 +65,14 @@ class Game:
 	
 	def run(self):
 		while True:
+
+			
 			
 			self.update()
 			self.check_events()
 			
 			self.draw()
+			
 			
 
 	

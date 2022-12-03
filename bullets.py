@@ -4,25 +4,25 @@ import math
 import pygame as pg
 
 class Bullets(pg.sprite.Sprite):
-    def __init__(self,game,pos):
+    def __init__(self,game,pos,grad):
         super().__init__()
         self.game = game
         # self.angle = angle
         # self.gage = gage
         self.state = 'Ready'
         self.init_pos = pos
-        self.__x ,self.__y = self.init_pos
+        self.x ,self.y = self.init_pos
 
 
         self.type1_img = pg.image.load('./resources/img/Type1.png')#.convert_alpha()
-        self.type1_img = pg.transform.scale(self.type1_img,(50,50))
-        self.type1_img = pg.transform.rotate(self.type1_img,135)
+        self.type1_img = pg.transform.scale(self.type1_img,(40,40))
+        self.type1_img = pg.transform.rotate(self.type1_img,grad)
 
         #self.type2_img = pg.image.load('./resources/img/Type2.png')#.convert_alpha
 
         
         self.rect = self.type1_img.get_rect()
-        self.rect.centerx , self.rect.centery = self.__x, self.__y
+        self.rect.centerx , self.rect.centery = self.x, self.y
 
         #self.type2_mask = pg.mask.from_surface(self.type2_img)
         
@@ -30,6 +30,12 @@ class Bullets(pg.sprite.Sprite):
         self.mass = B1_MASS
         self.bullet_speeed = B1_SPEED
         self.type = '1'
+
+        if grad == 135:
+            self.dir = 1
+        else:
+            self.dir = -1
+
 
 
 
@@ -69,27 +75,35 @@ class Bullets(pg.sprite.Sprite):
         if self.state == 'Fire':
             delta_time = self.fire_time - pg.time.get_ticks()
             gravity =  self.mass * delta_time
-            dx = math.cos(self.angle) * speed
-            dy = math.sin(self.angle) * speed - gravity            
-            self.__x += dx
-            self.__y += dy
+            dx = math.cos(self.angle) * speed - self.game.weather.wind * self.game.delta_time * delta_time
+            dy = math.sin(self.angle) * speed - gravity  
+  
+            self.x += dx
+            self.y += dy
         
-        if self.__x > WIDTH or self.__x < 0 or self.__y > HEIGHT:
+        
+        
+        if self.x > WIDTH or self.x < 0 or self.y > HEIGHT-50 or \
+            self.game.wall.rect.colliderect(self.rect):
             self.state = 'Stop'
 
-        if self.state == 'Stop' or self.state == 'Ready':
-            self.__x, self.__y = self.init_pos
+        if self.state == 'Stop':
+            self.x, self.y = 0,0
 
-        self.rect.centerx = self.__x
-        self.rect.centery = self.__y
+        if self.state == 'Ready':
+            self.x, self.y = self.init_pos
+
+
+        self.rect.centerx = self.x
+        self.rect.centery = self.y
+        
 
 
     def draw(self):
         if self.state =='Fire':
-            #print(self.rect)
-            self.game.screen.blit(self.type1_img,(self.__x ,self.__y ))
 
-            #pg.draw.circle(self.game.screen, 'black', (self.__x , self.__y ),10)
+            self.game.screen.blit(self.type1_img,(self.x ,self.y ))
+
         
 
 
