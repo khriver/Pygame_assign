@@ -20,9 +20,10 @@ class Bullets(pg.sprite.Sprite):
 
         #self.type2_img = pg.image.load('./resources/img/Type2.png')#.convert_alpha
 
-        #self.type1_mask = pg.mask.from_surface(self.type1_img)
+        
         self.rect = self.type1_img.get_rect()
         self.rect.centerx , self.rect.centery = self.__x, self.__y
+
         #self.type2_mask = pg.mask.from_surface(self.type2_img)
         
         self.radius_expl = B1_RADIUS_EXPLOSION
@@ -79,14 +80,15 @@ class Bullets(pg.sprite.Sprite):
         if self.state == 'Stop' or self.state == 'Ready':
             self.__x, self.__y = self.init_pos
 
-        self.rect.x = self.__x
-        self.rect.y = self.__y
+        self.rect.centerx = self.__x
+        self.rect.centery = self.__y
 
 
     def draw(self):
         if self.state =='Fire':
             #print(self.rect)
             self.game.screen.blit(self.type1_img,(self.__x ,self.__y ))
+
             #pg.draw.circle(self.game.screen, 'black', (self.__x , self.__y ),10)
         
 

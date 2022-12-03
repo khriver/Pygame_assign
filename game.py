@@ -5,6 +5,7 @@ from settings import *
 from player import *
 from sprite import *
 from bullets import *
+from check_events import *
 
 class Game:
 	def __init__(self):
@@ -20,6 +21,7 @@ class Game:
 		self.sprite = Sprite(self)
 		self.bullets_player = Bullets(self,PLAYER_POS)
 		self.bullets_sprite = Bullets(self,SPRITE_POS)
+		self.check_event = Checkevents(self)
 
 	def update(self):
 		self.player.update()
@@ -42,15 +44,8 @@ class Game:
 			self.bullets_sprite.draw() 
 	
 	def check_events(self):
-		if self.player.turns == True and self.bullets_player.state == 'Stop':
-			self.player.turns = False
-			self.sprite.turns = True
-			self.bullets_sprite.state = 'Ready'
-			
-		if self.sprite.turns == True and self.bullets_sprite.state == 'Stop':
-			self.sprite.turns = False
-			self.player.turns = True
-			self.bullets_player.state ='Ready'
+		self.check_event.turn()
+		self.check_event.hit()
 			
 
 		for event in pg.event.get():
@@ -60,14 +55,12 @@ class Game:
 	
 	def run(self):
 		while True:
-			if self.sprite.rect.colliderect(self.bullets_player.rect):
-				self.bullets_player.state = 'Stop'
-				self.bullets_player.rect
-			self.check_events()
+			
 			self.update()
-			#print(self.bullets_player.get_rect(),self.bullets_sprite.get_rect())
+			self.check_events()
+			
 			self.draw()
-			#print(self.player.turns,self.bullets_player.state,self.sprite.turns,self.bullets_sprite.state)
+			
 
 	
 

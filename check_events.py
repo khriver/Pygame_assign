@@ -19,13 +19,12 @@ class Checkevents:
             self.game.bullets_player.state ='Ready'
     
 
-    def turn(self):
-        if self.game.player.turns == True and self.game.bullets_player.state == 'Stop':
-            self.game.player.turns = False
-            self.game.sprite.turns = True
-            self.game.bullets_sprite.state = 'Ready'
+    def hit(self):
+        if self.game.sprite.rect.colliderect(self.game.bullets_player.rect):
+            self.game.bullets_player.state = 'Stop'
+
+
+        if self.game.player.rect.colliderect(self.game.bullets_sprite.rect):
+            self.game.bullets_sprite.state = 'Stop'
 			
-        if self.game.sprite.turns == True and self.game.bullets_sprite.state == 'Stop':
-            self.game.sprite.turns = False
-            self.game.player.turns = True
-            self.game.bullets_player.state ='Ready'
+
